@@ -7,4 +7,5 @@ $user = 'dbusr';
 $pass = 'WerSeCPass';
 
 Edit and move mysql.conf to /etc/rsyslog.d/
+Create temporary tables from prepare.sql
 
