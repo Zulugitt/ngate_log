@@ -1,4 +1,3 @@
-cat log_parse.php 
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,12 +11,6 @@ cat log_parse.php
     
     $name = $_POST['name'];
     $datecon = $_POST['datecon'];
-
-//if($conn->connect_error){
-//    die("Ошибка: " . $conn->connect_error);
-//}
-
-//SELECT Username,ConnectTime,DisconnectTime,Duration from (SELECT Username,ConnectTime,DisconnectTime,Duration,session_id, ROW_NUMBER() OVER(PARTITION BY session_id ORDER BY session_id) AS selcol FROM NG_log ) AS kikk where selcol = 1
 
 $sql_Tconnect = "INSERT INTO NG_connect (ID, DateConnect, session_id, Username) SELECT ID, ReceivedAt,SUBSTRING_INDEX(Message,' ', -1),SUBSTRING_INDEX(Message,'/0', 1) FROM SystemEvents WHERE (`Message` LIKE '%Create session - Su%') AND  (`Message` LIKE '%$name%') AND (`ReceivedAt` LIKE '%$datecon%')" ;
 $sql_Tdisconnect = "INSERT INTO NG_Disconnect (ID, DateDisconnect, session_id, Username) SELECT ID, ReceivedAt, SUBSTRING_INDEX(Message,' ', -1), SUBSTRING_INDEX(Message,'/0', 1) FROM SystemEvents WHERE ((`Message` LIKE '%Deleting expired pa%'  OR `Message` LIKE '% Abort %') OR `Message` LIKE '%Deleting expired aborted session%')   AND  (`Message` LIKE '%$name%') AND `ReceivedAt` LIKE '%$datecon%'" ;
@@ -40,8 +33,6 @@ $eee3 = $conn->query($sql_NGLOG);
 
 
 $sql_create = "SELECT ConnectTime,DisconnectTime,Duration,Username  FROM `NG_log`" ;
-// WHERE `Message` LIKE '%$name%' AND `SysLogTag` LIKE '%ng-directory-service%' AND `Message` LIKE '%Create session - Success%' AND `ReceivedAt` LIKE '%$datecon%' LIMIT 50";
-$sql_end = "SELECT ID,DeviceReportedTime,Message  FROM `SystemEvents` WHERE `Message` LIKE '%$name%'  AND (`Message` LIKE '%Deleting expired pa%' OR `Message` LIKE '%Abort %%') AND `ReceivedAt` LIKE '%$datecon%'  LIMIT 50";
 if($result = $conn->query($sql_create)){
     echo "<table border='1'><tr><th>Пользователь</th><th>Время подключения</th><th>Время отключения</th><th>Длительность, мин</th></tr>";
     foreach($result as $row){
